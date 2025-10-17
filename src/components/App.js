@@ -1,38 +1,45 @@
+import React, { useState, useEffect } from "react";
+import "./../styles/App.css";
 
-import React from "react";
-import './../styles/App.css';
-
-const App = () => {
-  const [summ, setSum] = useState(0);
-  //   const [inputValue, setInputValue] = useState("");
+export default function SumCalculator() {
+  const [sum, setSum] = useState(0);
   const [numbers, setNumbers] = useState([]);
+  const [inputValue, setInputValue] = useState("");
 
+  // Recalculate sum asynchronously whenever numbers array changes
   useEffect(() => {
     const timer = setTimeout(() => {
       const total = numbers.reduce((a, b) => a + b, 0);
       setSum(total);
     }, 0);
-    return () => {
-      clearTimeout(timer);
-    };
+
+    return () => clearTimeout(timer);
   }, [numbers]);
 
+  const handleInputChange = (e) => {
+    setInputValue(e.target.value);
+  };
+
+  const handleAddNumber = () => {
+    if (inputValue !== "") {
+      setNumbers([...numbers, parseInt(inputValue)]);
+      setInputValue(""); // clear input for next number
+    }
+  };
+
   return (
-    <div>
+    <div id="main">
       <h2>Sum Calculator</h2>
 
       <input
         type="number"
-        onChange={(e) => {
-          //   setSum(summ + parseInt(e.target.value));
-          if (e.target.value !== "") {
-            setNumbers([...numbers, parseInt(e.target.value)]);
-          }
-        }}
-      ></input>
-      <p>sum: {summ}</p>
+        value={inputValue}
+        onChange={handleInputChange}
+        placeholder="Enter a number"
+      />
+      <button onClick={handleAddNumber}>Add Number</button>
+
+      <p>Sum: {sum}</p>
     </div>
   );
 }
-
-export default App
